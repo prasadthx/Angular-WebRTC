@@ -26,7 +26,10 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/three/src/Three.js",
+              "./node_modules/vanta/src/vanta.globe.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -89,7 +92,10 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/three/src/Three.js",
+              "./node_modules/vanta/src/vanta.globe.js"
+            ]
           }
         },
         "lint": {
