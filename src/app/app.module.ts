@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module'
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { GetstartedComponent } from './getstarted/getstarted.component';
+import { MeetingModule} from "./meeting/meeting.module";
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { GetstartedComponent } from './getstarted/getstarted.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    AuthModule
+    AuthModule,
+    MeetingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
