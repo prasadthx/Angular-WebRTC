@@ -35,7 +35,7 @@ export class RoomComponent implements AfterViewInit{
     this.createGrid(this.participants)
     }
 
-  participants = 100;
+  participants = 10;
 
   checkOverflow(element) {
     return element.scrollHeight > element.offsetHeight || element.scrollWidth > element.clientWidth;
@@ -59,7 +59,12 @@ export class RoomComponent implements AfterViewInit{
       else{
         console.log("adding="+i);
         let inner_flex=document.createElement("div");
-        inner_flex.innerText = i.toString(10);
+        // inner_flex.innerText = i.toString(10);
+        let video = document.createElement("video");
+        video.style["height"] = "inherit";
+        video.style["width"] = "inherit";
+        inner_flex.appendChild(video);
+        this.displayVideo(video);
         inner_flex.style["height"] = this.slider.value+"vh"
         inner_flex.style["width"] = this.slider.value +"vw"
         currentFlexbox.appendChild(inner_flex);
@@ -85,7 +90,11 @@ export class RoomComponent implements AfterViewInit{
     setTimeout(()=>this.slider.style["visibility"] = "hidden", 4000);
   }
 
-  changeSliderVisibility(){
-    this.slider.style["visibility"] = "hidden";
+  displayVideo(video){
+    navigator.mediaDevices.getUserMedia({video: true}).then((ms: MediaStream) => {
+      // const _video = video.nativeElement;
+      video.srcObject = ms;
+      video.play();
+    });
   }
 }

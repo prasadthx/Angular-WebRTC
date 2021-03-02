@@ -28,7 +28,8 @@
             ],
             "scripts": [
               "./node_modules/three/src/Three.js",
-              "./node_modules/vanta/src/vanta.globe.js"
+              "./node_modules/vanta/src/vanta.globe.js",
+              "./node_modules/peerjs/dist/peerjs.min.js"
             ]
           },
           "configurations": {
@@ -94,7 +95,8 @@
             ],
             "scripts": [
               "./node_modules/three/src/Three.js",
-              "./node_modules/vanta/src/vanta.globe.js"
+              "./node_modules/vanta/src/vanta.globe.js",
+              "./node_modules/peerjs/dist/peerjs.min.js"
             ]
           }
         },
