@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
 import {isPlatformBrowser} from "@angular/common";
 import { DOCUMENT } from '@angular/common';
+import {SignalingService} from "../signaling.service";
+import * as io from "socket.io-client";
 
 
 @Component({
@@ -9,6 +11,11 @@ import { DOCUMENT } from '@angular/common';
   styleUrls: ['./room.component.css']
 })
 export class RoomComponent implements AfterViewInit{
+
+  constructor(private socketService: SignalingService) {}
+  SOCKET_ENDPOINT = 'localhost:3000';
+  socket;
+
   @ViewChild('slide',{read:ElementRef}) slide:ElementRef
   // @ViewChild('flexbox', {read:ElementRef}) flexbox:ElementRef
   @ViewChild('myRange', {read:ElementRef}) myrange:ElementRef
@@ -17,6 +24,7 @@ export class RoomComponent implements AfterViewInit{
   outerFlex
   slider
   headStyle
+
 
   ngAfterViewInit(): void {
     this.outerFlex = this.slide.nativeElement
@@ -32,10 +40,10 @@ export class RoomComponent implements AfterViewInit{
     this.headStyle = document.getElementsByClassName("style")[0];
     console.log(this.headStyle);
     // this.headStyle = this.headstyle.nativeElement
-    this.createGrid(this.participants)
+    this.createGrid(this.participants);
     }
 
-  participants = 10;
+  participants = 0;
 
   checkOverflow(element) {
     return element.scrollHeight > element.offsetHeight || element.scrollWidth > element.clientWidth;
@@ -81,9 +89,9 @@ export class RoomComponent implements AfterViewInit{
     this.createGrid(this.participants);
   }
 
-  ngOnInit(): void {
-    console.log("Lame")
-  }
+  // ngOnInit(): void {
+  //   console.log("Lame")
+  // }
 
   setslider() {
     this.slider.style["visibility"] = "visible";
