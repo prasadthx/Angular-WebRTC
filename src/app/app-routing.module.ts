@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GetstartedComponent } from './getstarted/getstarted.component'
-import { from } from 'rxjs';
+// import { GetstartedComponent } from './getstarted/getstarted.component'
 
 const routes:Routes = [
-  {path:'', component:GetstartedComponent}
+  // {path:'', component:GetstartedComponent}
 ];
 
 @NgModule({
