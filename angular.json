@@ -26,11 +26,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [
-              "./node_modules/three/src/Three.js",
-              "./node_modules/vanta/src/vanta.globe.js",
-              "./node_modules/peerjs/dist/peerjs.min.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -93,11 +89,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [
-              "./node_modules/three/src/Three.js",
-              "./node_modules/vanta/src/vanta.globe.js",
-              "./node_modules/peerjs/dist/peerjs.min.js"
-            ]
+            "scripts": []
           }
         },
         "lint": {
