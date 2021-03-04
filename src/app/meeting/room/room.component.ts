@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFOR
 import {isPlatformBrowser} from "@angular/common";
 import { DOCUMENT } from '@angular/common';
 import {SignalingService} from "../signaling.service";
-import * as io from "socket.io-client";
+
 
 
 @Component({
@@ -13,8 +13,6 @@ import * as io from "socket.io-client";
 export class RoomComponent implements AfterViewInit{
 
   constructor(private socketService: SignalingService) {}
-  SOCKET_ENDPOINT = 'localhost:3000';
-  socket;
 
   @ViewChild('slide',{read:ElementRef}) slide:ElementRef
   // @ViewChild('flexbox', {read:ElementRef}) flexbox:ElementRef
