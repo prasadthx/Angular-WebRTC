@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import {io} from 'socket.io-client';
+import {io} from "socket.io-client";
 
 @Injectable({
   providedIn: 'root'
 })
-export class TestService {
+export class SignalingService {
   private url = 'http://localhost:3000';
   private socket;
 
   constructor() {
     // @ts-ignore
-    // this.socket = io(this.url);
+    this.socket = io(this.url);
   }
 }
+

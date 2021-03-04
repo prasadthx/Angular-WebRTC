@@ -1,0 +1,27 @@
+<style class="style">
+
+</style>
+<i><img src="https://img.icons8.com/fluent-systems-regular/48/000000/page-size--v2.png" alt="not present" style="box-sizing: content-box; position: absolute" (click)="setslider()"></i>
+<div class="body">
+  <div style="position: absolute; z-index: 1; visibility: hidden; transition: visibility 3s">
+    <label>
+      <input type="range" min="15" max="60" class="slider" #myRange (input)="sliderInput()">
+    </label>
+  </div>
+
+  <div class="slider">
+    <div class="slides" #slide>
+      <div class="flexbox" #flexbox>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="menu" style="position: absolute;bottom: 0px; background: darkslategrey; height: 7vh; width: 100vw; display: flex;">
+  <div style="min-width: 80px; color: papayawhip"><i class="fas fa-video" style='font-size:36px'></i></div>
+  <div style="min-width: 80px; color: papayawhip"><i class="fas fa-microphone" style='font-size:36px'></i></div>
+  <div style="min-width: 80px; color: papayawhip"><i class="fas fa-video" style='font-size:36px'></i></div>
+</div>
+
+

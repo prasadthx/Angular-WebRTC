@@ -1,1 +1,98 @@
 /* You can add global styles to this file, and also import other style files */
+/* body{
+  background-image: url('/assets/back2.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-blend-mode: screen;
+  height: 100vh;
+} */
+html{
+  padding: 0%;
+  box-sizing: border-box;
+}
+@font-face {
+  font-family: parabola;
+  src: url(assets/fonts/PARABOLA-Regular.ttf) format("truetype");
+}
+
+body{
+  padding: 0%;
+  box-sizing: border-box;
+  margin: 0%;
+}
+
+.body{
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #74ABE2, #5563DE);
+  height: 100vh;
+}
+
+.slider {
+  width: 90vw;
+  text-align: center;
+  overflow: hidden;
+}
+
+.slides {
+  display: flex;
+
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.slides::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.slides::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 10px;
+}
+.slides::-webkit-scrollbar-track {
+  background: transparent;
+}
+.slides > div {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  width: 90vw;
+  height: 85vh;
+  margin-right: 50px;
+  border-radius: 10px;
+  background: white;
+  transform-origin: center center;
+  transform: scale(1);
+  transition: transform 0.5s;
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+}
+
+.flexbox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*align-content: stretch;*/
+  flex-wrap: wrap;
+  height: 90vh;
+  width: 90vw;
+}
+
+.flexbox > div {
+  background-color: darkblue;
+  color: white;
+  padding: 20px;
+  font-size: 30px;
+  margin: 1%;
+}
+
