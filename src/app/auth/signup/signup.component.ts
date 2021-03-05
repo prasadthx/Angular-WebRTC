@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { from } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, NgForm, Validators} from '@angular/forms'
-
+import {AuthService} from '../auth.service'
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -18,7 +18,7 @@ export class SignupComponent implements OnInit {
   password:String="";
   meetings:{}={}
   
-  constructor(private formBuilder:FormBuilder) {
+  constructor(private formBuilder:FormBuilder, private authService:AuthService) {
     this.signUpForm = formBuilder.group({
       firstname:new FormControl('',Validators.required),
       lastname:new FormControl('',Validators.required),
@@ -30,6 +30,9 @@ export class SignupComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.authService.getNews().subscribe((data)=>{
+      console.log(data)
+    })
   }
 
   PostData(signUpForm){
