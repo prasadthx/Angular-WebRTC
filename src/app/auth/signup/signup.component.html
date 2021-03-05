@@ -1,1 +1,21 @@
-<p>signup works!</p>
+<form [formGroup]='signUpForm' (ngSubmit)='PostData(signUpForm)'>
+    <div class="form-group">
+        <input type="text" formControlName="firstname" placeholder="Your first name">
+    </div> <br>
+    <div class="form-group">
+        <input type="text" formControlName="lastname" placeholder="Your last name">
+    </div> <br>
+    <div class="form-group">
+        <input type="text" formControlName="defaultname" placeholder="Your default name">
+    </div> <br>
+    <div class="form-group">
+        <input type="text" formControlName="email" placeholder="Your email">
+    </div> <br>
+    <div class="form-group">
+        <input type="password" formControlName="password" placeholder="Your password">
+    </div> <br>
+    <div class="form-group">
+        <input type="text" formControlName="meetings" placeholder="Your meetings">
+    </div> <br>
+    <input type="submit" value="Post Data">
+</form>

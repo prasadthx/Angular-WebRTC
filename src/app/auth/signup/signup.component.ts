@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { from } from 'rxjs';
+import { FormBuilder, FormControl, FormGroup, NgForm, Validators} from '@angular/forms'
 
 @Component({
   selector: 'app-signup',
@@ -7,9 +9,31 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SignupComponent implements OnInit {
 
-  constructor() { }
+  title = "Register";
+  signUpForm:FormGroup;
+  firstName:String="";
+  lastName:String="";
+  email:String="";
+  defaultName:String="";
+  password:String="";
+  meetings:{}={}
+  
+  constructor(private formBuilder:FormBuilder) {
+    this.signUpForm = formBuilder.group({
+      firstname:new FormControl('',Validators.required),
+      lastname:new FormControl('',Validators.required),
+      email:new FormControl('',[Validators.required,Validators.email]),
+      defaultname:new FormControl('',Validators.required),
+      password:new FormControl('',Validators.required),
+      meetings:new FormControl()
+    })
+   }
 
   ngOnInit(): void {
+  }
+
+  PostData(signUpForm){
+    console.log(signUpForm.controls)
   }
 
 }
