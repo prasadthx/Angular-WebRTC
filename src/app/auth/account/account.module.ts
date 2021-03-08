@@ -7,10 +7,11 @@ import { LayoutComponent } from './layout/layout.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
-  declarations: [ForgotPasswordComponent, LayoutComponent, RegisterComponent, ResetPasswordComponent, VerifyEmailComponent],
+  declarations: [ForgotPasswordComponent, LayoutComponent, RegisterComponent, ResetPasswordComponent, VerifyEmailComponent, LoginComponent],
   imports: [
     CommonModule,
     AccountRoutingModule

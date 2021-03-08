@@ -4,10 +4,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AccountService, AlertService } from '@app/_services';
-import { MustMatch } from '@app/_helpers';
 
-@Component({ templateUrl: 'register.component.html' })
-export class RegisterComponent implements OnInit {
+@Component({ templateUrl: 'login.component.html' })
+export class LoginComponent implements OnInit {
     form: FormGroup;
     loading = false;
     submitted = false;
@@ -22,15 +21,8 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.form = this.formBuilder.group({
-            title: ['', Validators.required],
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(6)]],
-            confirmPassword: ['', Validators.required],
-            acceptTerms: [false, Validators.requiredTrue]
-        }, {
-            validator: MustMatch('password', 'confirmPassword')
+            password: ['', Validators.required]
         });
     }
 
@@ -49,12 +41,13 @@ export class RegisterComponent implements OnInit {
         }
 
         this.loading = true;
-        this.accountService.register(this.form.value)
+        this.accountService.login(this.f.email.value, this.f.password.value)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Registration successful, please check your email for verification instructions', { keepAfterRouteChange: true });
-                    this.router.navigate(['../login'], { relativeTo: this.route });
+                    // get return url from query parameters or default to home page
+                    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+                    this.router.navigateByUrl(returnUrl);
                 },
                 error: error => {
                     this.alertService.error(error);
