@@ -6,13 +6,14 @@ import { EditprofileComponent } from './editprofile/editprofile.component';
 import { AuthRoutingModule } from './auth-routing.module';
 import { CreatemeetingComponent } from './createmeeting/createmeeting.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms'
+import { ReactiveFormsModule } from '@angular/forms';
+import { HomeComponent } from './home/home.component'
 
 
 
 
 @NgModule({
-  declarations: [LoginComponent, SignupComponent, EditprofileComponent, CreatemeetingComponent],
+  declarations: [LoginComponent, SignupComponent, EditprofileComponent, CreatemeetingComponent, HomeComponent],
   imports: [
     CommonModule,
     AuthRoutingModule,
