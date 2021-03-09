@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import {AccountService} from "../../services/account.service";
+import {AlertService} from "../../services/alert.service";
+import {MustMatch} from "../../helpers/must-match.validator";
 
-import { AccountService, AlertService } from '@app/_services';
-import { MustMatch } from '@app/_helpers';
+
 
 @Component({ templateUrl: 'register.component.html' })
 export class RegisterComponent implements OnInit {

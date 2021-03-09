@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first, finalize } from 'rxjs/operators';
+import {AccountService} from "../../services/account.service";
+import {AlertService} from "../../services/alert.service";
 
-import { AccountService, AlertService } from '@app/_services';
+
 
 @Component({ templateUrl: 'forgot-password.component.html' })
 export class ForgotPasswordComponent implements OnInit {
@@ -48,4 +50,3 @@ export class ForgotPasswordComponent implements OnInit {
     }
 }
 
- 

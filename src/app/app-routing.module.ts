@@ -5,7 +5,7 @@ import { GetstartedComponent } from './getstarted/getstarted.component'
 
 const routes:Routes = [
   {path:'', component:GetstartedComponent},
-  { path: 'auth', loadChildren: AuthModule },
+
 ];
 
 @NgModule({
