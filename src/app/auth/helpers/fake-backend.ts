@@ -3,11 +3,10 @@ import { HttpRequest, HttpResponse, HttpHandler, HttpEvent, HttpInterceptor, HTT
 import { Observable, of, throwError } from 'rxjs';
 import { delay, materialize, dematerialize } from 'rxjs/operators';
 
-import { AlertService } from '@app/_services';
-import { Role } from '@app/_models';
+import { AlertService } from '../services/alert.service';
 
 // array in local storage for accounts
-const accountsKey = 'angular-10-signup-verification-boilerplate-accounts';
+const accountsKey = 'angular-10-verification-accounts';
 let accounts = JSON.parse(localStorage.getItem(accountsKey)) || [];
 
 @Injectable()
@@ -51,7 +50,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 default:
                     // pass through any requests not handled above
                     return next.handle(request);
-            }    
+            }
         }
 
         // route functions
@@ -59,7 +58,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function authenticate() {
             const { email, password } = body;
             const account = accounts.find(x => x.email === email && x.password === password && x.isVerified);
-            
+
             if (!account) return error('Email or password is incorrect');
 
             // add refresh token to account
@@ -74,11 +73,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function refreshToken() {
             const refreshToken = getRefreshToken();
-            
+
             if (!refreshToken) return unauthorized();
 
             const account = accounts.find(x => x.refreshTokens.includes(refreshToken));
-            
+
             if (!account) return unauthorized();
 
             // replace old refresh token with a new one and save
@@ -95,10 +94,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function revokeToken() {
             if (!isAuthenticated()) return unauthorized();
-            
+
             const refreshToken = getRefreshToken();
             const account = accounts.find(x => x.refreshTokens.includes(refreshToken));
-            
+
             // revoke token and save
             account.refreshTokens = account.refreshTokens.filter(x => x !== refreshToken);
             localStorage.setItem(accountsKey, JSON.stringify(accounts));
@@ -154,13 +153,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             return ok();
         }
-        
+
         function verifyEmail() {
             const { token } = body;
             const account = accounts.find(x => !!x.verificationToken && x.verificationToken === token);
-            
+
             if (!account) return error('Verification failed');
-            
+
             // set is verified flag to true if token is valid
             account.isVerified = true;
             localStorage.setItem(accountsKey, JSON.stringify(accounts));
@@ -171,10 +170,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function forgotPassword() {
             const { email } = body;
             const account = accounts.find(x => x.email === email);
-            
+
             // always return ok() response to prevent email enumeration
             if (!account) return ok();
-            
+
             // create reset token that expires after 24 hours
             account.resetToken = new Date().getTime().toString();
             account.resetTokenExpires = new Date(Date.now() + 24*60*60*1000).toISOString();
@@ -193,16 +192,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             return ok();
         }
-        
+
         function validateResetToken() {
             const { token } = body;
             const account = accounts.find(x =>
                 !!x.resetToken && x.resetToken === token &&
                 new Date() < new Date(x.resetTokenExpires)
             );
-            
+
             if (!account) return error('Invalid token');
-            
+
             return ok();
         }
 
@@ -212,9 +211,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 !!x.resetToken && x.resetToken === token &&
                 new Date() < new Date(x.resetTokenExpires)
             );
-            
+
             if (!account) return error('Invalid token');
-            
+
             // update password and remove reset token
             account.password = password;
             account.isVerified = true;
@@ -303,7 +302,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             localStorage.setItem(accountsKey, JSON.stringify(accounts));
             return ok();
         }
-        
+
         // helper functions
 
         function ok(body?) {
@@ -361,7 +360,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function generateJwtToken(account) {
             // create token that expires in 15 minutes
-            const tokenPayload = { 
+            const tokenPayload = {
                 exp: Math.round(new Date(Date.now() + 15*60*1000).getTime() / 1000),
                 id: account.id
             }

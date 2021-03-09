@@ -9,11 +9,11 @@ const profileModule = () => import('./profile/profile.module').then(x => x.Profi
 
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'account', loadChildren: accountModule },
-  { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
-  // otherwise redirect to home
-  { path: '**', redirectTo: '' }
+  { path: 'auth', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'auth/account', loadChildren: accountModule },
+  { path: 'auth/profile', loadChildren: profileModule, canActivate: [AuthGuard] },
+  //otherwise redirect to home
+  // { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
