@@ -1,9 +1,19 @@
+<div class="md:flex w-full">
+  <div class="hidden md:block w-1/2 bg-indigo-500 py-10 px-10">
+    <img style="background-size: cover; background-position: center center;" src="https://images.unsplash.com/photo-1515965885361-f1e0095517ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80">
+  </div>
+  <div class="w-full md:w-1/2 py-10 px-5 md:px-10">
+<!--    <div class="text-center mb-10">-->
+<!--      <h1 class="font-bold text-3xl text-gray-900">REGISTER</h1>-->
+<!--      <p>Enter your information to register</p>-->
+<!--    </div>-->
+
 <div>
       <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
       <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
         Sign in to your account
       </h2>
-    </div>
+</div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
       <div class="rounded-md shadow-sm -space-y-px">
         <div class="form-group">
@@ -42,5 +52,6 @@
         </div>
     </form>
 
+  </div>
 
-
+</div>
