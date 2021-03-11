@@ -1,6 +1,66 @@
-<h1>My Profile</h1>
-<p>
-    <strong>Name: </strong> {{account.title}} {{account.firstName}} {{account.lastName}}<br />
-    <strong>Email: </strong> {{account.email}}
-</p>
-<p><a routerLink="update">Update Profile</a></p>
+    <div style="width: 70vw; margin: auto;" class="bg-gray-500 bg-opacity-50">
+    <div class="px-4 py-5 sm:px-6 bg-gray-800 bg-opacity-90 rounded-t-lg" style="color: white;">
+      <h3 class="text-lg leading-6 font-medium">
+        {{account.firstName}}'s Profile
+      </h3>
+      <p class="mt-1 max-w-2xl text-sm text-gray-500">
+        Personal details and application.
+      </p>
+    </div>
+    <div class="">
+      <dl>
+        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-white">
+            First Name
+          </dt>
+          <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
+            {{account.firstName}}
+          </dd>
+        </div>
+        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-white">
+            Last Name
+          </dt>
+          <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
+            {{account.lastName}}
+          </dd>
+        </div>
+        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-white">
+            Email address
+          </dt>
+          <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
+            {{account.email}}
+          </dd>
+        </div>
+        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-white">
+            Default Meeting Name
+          </dt>
+          <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
+            {{account.defaultName}}
+          </dd>
+        </div>
+        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-white">
+            Date Joined
+          </dt>
+          <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
+              {{account.createdAt}}
+         </dd>
+        </div>
+      </dl>
+    </div>
+    <button routerLink="update" class="bg-opacity-50 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+          <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+    </svg>
+        </span>
+        Update
+    </button>
+    <button  routerLink="../" class="bg-opacity-50 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 rounded-t-none" style="">
+        Cancel
+    </button>
+  
+</div>
