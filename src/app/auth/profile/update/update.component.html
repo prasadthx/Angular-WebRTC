@@ -56,7 +56,7 @@
     </div>
 </form> -->
 
-<div style="width: 70vw; margin: auto;" class="bg-gray-500 bg-opacity-50">
+<div style="width: 70vw; margin: auto;overflow: auto;" class="bg-gray-500 bg-opacity-50">
     <div class="px-4 py-5 sm:px-6 bg-gray-800 bg-opacity-90 rounded-t-lg" style="color: white;">
       <h3 class="text-lg leading-6 font-medium">
         {{account.firstName}}'s Profile
@@ -75,7 +75,7 @@
                         <label>First Name</label>
                     </dt>
                     <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
-                        <input type="text" formControlName="firstName" class="form-control bg-opacity-50 bg-gray-900 appearance-none w-full -ml-10 pl-10 pr-3 py-1.5 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                        <input type="text" formControlName="firstName" class="form-control bg-opacity-50 bg-gray-900 appearance-none w-full pl-10 pr-3 py-1.5 rounded-lg border-2 border-gray-900 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
                     </dd>
                     <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
                         <div *ngIf="f.password.errors.required">Password is required</div>
@@ -89,7 +89,7 @@
                         Last Name
                     </dt>
                     <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
-                        <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+                        <input type="text" formControlName="lastName" class="form-control bg-opacity-50 bg-gray-900 appearance-none w-full pl-10 pr-3 py-1.5 rounded-lg border-2 border-gray-900 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
                     </dd>
                     <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
                         <div *ngIf="f.lastName.errors.required">Last Name is required</div>
@@ -103,7 +103,7 @@
                     Email address
                 </dt>
                 <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
-                    <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                    <input type="text" formControlName="email" class="form-control bg-opacity-50 bg-gray-900 appearance-none w-full pl-10 pr-3 py-1.5 rounded-lg border-2 border-gray-900 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
                 </dd>
                 <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
                     <div *ngIf="f.email.errors.required">Email is required</div>
@@ -120,7 +120,12 @@
           </dd>
         </div>
 
-        <p style="color: white; text-align: center;">Leave blank to keep the same password</p>
+        
+
+        <p style="text-align: center; color: white;">
+               Leave blank to keep the same password
+        </p>   
+
         <div class="form-row">
            <div class="form-group col">
                 <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -128,7 +133,7 @@
                     Password
                 </dt>
                 <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
-                    <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                    <input type="password" formControlName="password" class="form-control bg-opacity-50 bg-gray-900 appearance-none w-full pl-10 pr-3 py-1.5 rounded-lg border-2 border-gray-900 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
                 </dd>
                 <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
                         <div *ngIf="f.password.errors.required">Password is required</div>
@@ -142,7 +147,7 @@
                     Confirm Password
                 </dt>
                 <dd class="mt-1 text-sm text-white sm:mt-0 sm:col-span-2">
-                    <input type="password" formControlName="confirmPassword" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+                    <input type="password" formControlName="confirmPassword" class="form-control bg-opacity-50 bg-gray-900 appearance-none w-full pl-10 pr-3 py-1.5 rounded-lg border-2 border-gray-900 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
                 </dd>
                 <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
                     <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
