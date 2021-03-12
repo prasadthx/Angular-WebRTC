@@ -33,7 +33,7 @@ export class VerifyEmailComponent implements OnInit {
             .subscribe({
                 next: () => {
                     this.alertService.success('Verification successful, you can now login', { keepAfterRouteChange: true });
-                    this.router.navigate(['../login'], { relativeTo: this.route });
+                    this.router.navigate(['../login'], { relativeTo: this.route, queryParams: { verified: 'true' } });
                 },
                 error: () => {
                     this.emailStatus = EmailStatus.Failed;

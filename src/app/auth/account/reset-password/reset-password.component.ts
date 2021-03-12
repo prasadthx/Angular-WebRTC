@@ -5,7 +5,7 @@ import { first } from 'rxjs/operators';
 import {AccountService} from "../../services/account.service";
 import {AlertService} from "../../services/alert.service";
 import {MustMatch} from "../../helpers/must-match.validator";
-
+import { ToastrService } from 'ngx-toastr';
 
 
 enum TokenStatus {
@@ -14,7 +14,10 @@ enum TokenStatus {
     Invalid
 }
 
-@Component({ templateUrl: 'reset-password.component.html' })
+@Component({ 
+    templateUrl: 'reset-password.component.html' ,
+    styleUrls: ['./reset-password.component.css']
+})
 export class ResetPasswordComponent implements OnInit {
     TokenStatus = TokenStatus;
     tokenStatus = TokenStatus.Validating;
@@ -28,7 +31,8 @@ export class ResetPasswordComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private toaster: ToastrService
     ) { }
 
     ngOnInit() {
@@ -77,10 +81,12 @@ export class ResetPasswordComponent implements OnInit {
             .subscribe({
                 next: () => {
                     this.alertService.success('Password reset successful, you can now login', { keepAfterRouteChange: true });
+                    this.toaster.success("Proceed to login and enter your credentials","Password Changed Successfully")
                     this.router.navigate(['../login'], { relativeTo: this.route });
                 },
                 error: error => {
                     this.alertService.error(error);
+                    this.toaster.error(error)
                     this.loading = false;
                 }
             });

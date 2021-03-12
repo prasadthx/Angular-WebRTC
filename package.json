@@ -22,6 +22,7 @@
     "@ngneat/tailwind": "^6.0.3",
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindcss/typography": "^0.4.0",
+    "ngx-toastr": "^13.2.0",
     "rxjs": "~6.6.0",
     "socket.io-client": "^3.1.2",
     "three": "^0.126.1",

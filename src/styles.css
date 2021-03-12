@@ -1,6 +1,8 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import '~ngx-toastr/toastr';
+
 /* You can add global styles to this file, and also import other style files */
 /* body{
   background-image: url('/assets/back2.jpg');
