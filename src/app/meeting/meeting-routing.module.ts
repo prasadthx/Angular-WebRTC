@@ -3,10 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { from } from 'rxjs/internal/observable/from';
 import { RoomComponent } from './room/room.component';
 import { AuthGuard } from '../auth/helpers/auth.guard';
+import { NewmeetingComponent } from './newmeeting/newmeeting.component'
 
 
 const routes:Routes = [
-  { path:'room', component:RoomComponent, canActivate:[AuthGuard]},
+  { path:'room', component: NewmeetingComponent, canActivate:[AuthGuard]},
 ];
 
 @NgModule({

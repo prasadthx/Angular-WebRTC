@@ -14,6 +14,7 @@ import { appInitializer } from './helpers/app.initializer';
 import { AccountService } from './services/account.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { GetMeetingResolve } from './meeting.resolver'
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { ToastrModule } from 'ngx-toastr';
 
     // provider used to create fake backend
     // fakeBackendProvider
+    GetMeetingResolve
 ],
 })
 export class AuthModule { }

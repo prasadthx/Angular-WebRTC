@@ -5,6 +5,6 @@ export class Account {
     lastName: string;
     email: string;
     jwtToken?: string;
-    meetings:{};
+    meetings;
     createdAt: Date;
 }

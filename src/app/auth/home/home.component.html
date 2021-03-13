@@ -29,14 +29,12 @@
             <div class="p-4">
                 <h1><b>Your meetings</b></h1>
                 <hr>
-                <div *ngIf="account.meetings==null">
+                <div *ngIf="meetings==null">
                     No meetings
                 </div>
-                <div *ngFor="let item in account.meetings">
-                    <li>
-                        {{item}}
-                    </li>
-                </div>
+                <ul *ngFor="let property of meetings | keyvalue">
+               <li> {{property.key}}: {{property.value}}</li><br>
+                </ul>
                 
             </div>
         </div>

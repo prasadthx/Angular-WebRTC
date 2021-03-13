@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, finalize } from 'rxjs/operators';
 
-
+import { Meeting } from '../models/meeting'
 import { Account } from '../models/account';
 import {environment} from "../../../environments/environment";
 
@@ -14,7 +14,7 @@ const baseUrl = `${environment.apiUrl}/accounts`;
 export class AccountService {
     private accountSubject: BehaviorSubject<Account>;
     public account: Observable<Account>;
-
+    // public meetings:Observable<>
     constructor(
         private router: Router,
         private http: HttpClient
@@ -95,6 +95,24 @@ export class AccountService {
                 }
                 return account;
             }));
+    }
+
+    createmeeting(id, params){
+        return this.http.put(`${baseUrl}/createmeeting/${id}`, params)
+        .pipe(map((account: any) => {
+            // update the current account if it was updated
+            if (account.id === this.accountValue.id) {
+                // publish updated account to subscribers
+                account = { ...this.accountValue, ...account };
+                this.accountSubject.next(account);
+            }
+            return account;
+        }));
+    }
+
+    getmeetings(id:string){
+        console.log("Get meetings called")
+        return this.http.get(`${baseUrl}/getmeetings/${id}`)
     }
 
     delete(id: string) {
