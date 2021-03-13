@@ -25,7 +25,8 @@ export class NewmeetingComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AccountService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -55,14 +56,16 @@ export class NewmeetingComponent implements OnInit {
             .subscribe({
                 next: () => {
                     this.alertService.success('Update successful', { keepAfterRouteChange: true });
-                    this.router.navigate(['./'], { relativeTo: this.route });
+                    this.toastr.success("Meeting Created Successfully","Success")
+                    this.router.navigate(['/auth'], { relativeTo: this.route });
                 },
                 error: error => {
                     this.alertService.error(error);
+                    this.toastr.error(error)
                     this.loading = false;
                 }
             });
-      console.log(this.form.value)
+      
   }
 }
 

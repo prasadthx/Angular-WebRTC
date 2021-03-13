@@ -1,1 +1,50 @@
-<p>joinmeeting works!</p>
+<div class="min-w-screen min-h-screen bg-cover flex items-center justify-center px-5 py-5 layout" style="background: url('http://bit.ly/2gPLxZ4');
+  background-repeat: no-repeat;
+  background-size: cover;">
+  <div class="bg-gray-100 text-gray-500 rounded-3xl shadow-xl w-full overflow-hidden" style="max-width:1000px">
+
+<div class="md:flex w-full">
+    <div class="w-full md:w-1/2 py-10 px-5 md:px-10">
+      <div>
+        <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Join A Meeting
+        </h2>
+      </div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+            <div class="form-group flex -mx-3">
+              <div class="w-full px-3 mb-3">
+                <label for="" class="text-xs font-semibold px-1">Meeting Code</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="fas fa-link text-gray-400 text-lg"></i></div>
+                  <input type="text" formControlName="description" class="form-control w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" />
+                </div>
+                <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                    <div *ngIf="f.description.errors.required">Meeting Code is required</div>
+                </div>
+            </div>
+            </div>
+            <div class="form-group">
+                <button [disabled]="loading" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <span *ngIf="loading" class="absolute left-0 inset-y-0 flex items-center pl-3">
+                  <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                  </svg>
+                  </span>
+                  Join
+                </button>
+            </div>
+        </form>
+      <div style="justify-content: center;display: flex">
+        <button  routerLink="/auth" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded justify-center mt-1" style="">
+          Cancel
+        </button>
+      </div>
+    </div>
+      <div class="hidden md:block w-1/2 bg-indigo-500 py-10 px-10" style="background: url('https://images.unsplash.com/photo-1515965885361-f1e0095517ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80'); background-size: cover; background-position: center center;">
+        <!--    <img style="object-fit: cover; background-position: center center;" src="https://images.unsplash.com/photo-1515965885361-f1e0095517ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80">-->
+      </div>
+    </div>
+    
+</div>
+</div>

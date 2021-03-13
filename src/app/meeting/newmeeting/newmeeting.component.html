@@ -8,7 +8,7 @@
       <div>
         <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Recover your Account
+          Create A Meeting
         </h2>
       </div>
         <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
@@ -16,7 +16,7 @@
               <div class="w-full px-3 mb-3">
                 <label for="" class="text-xs font-semibold px-1">Description</label>
                 <div class="flex">
-                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="fas fa-envelope text-gray-400 text-lg"></i></div>
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="fas fa-sticky-note text-gray-400 text-lg"></i></div>
                   <input type="text" formControlName="description" class="form-control w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" />
                 </div>
                 <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
@@ -31,12 +31,12 @@
                     <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                   </svg>
                   </span>
-                  Submit
+                  Create
                 </button>
             </div>
         </form>
       <div style="justify-content: center;display: flex">
-        <button  routerLink="../login" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded justify-center mt-1" style="">
+        <button  routerLink="/auth" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded justify-center mt-1" style="">
           Cancel
         </button>
       </div>
