@@ -5,7 +5,7 @@ import {io} from "socket.io-client";
   providedIn: 'root'
 })
 export class SignalingService {
-  private url = 'http://localhost:4000';
+  private url = 'http://localhost:5000';
   private socket;
 
   constructor() {

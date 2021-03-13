@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RoomComponent } from './room/room.component';
 import { SignalingService} from "./signaling.service";
 import {MeetingRoutingModule} from "./meeting-routing.module";
+import { NewmeetingComponent } from './newmeeting/newmeeting.component';
+import { JoinmeetingComponent } from './joinmeeting/joinmeeting.component';
 
 
 
 @NgModule({
-  declarations: [RoomComponent],
+  declarations: [RoomComponent, NewmeetingComponent, JoinmeetingComponent],
   imports: [
     CommonModule,
     MeetingRoutingModule
