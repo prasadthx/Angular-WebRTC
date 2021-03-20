@@ -1,18 +1,19 @@
 <style class="style">
 
 </style>
-<i><img src="https://img.icons8.com/fluent-systems-regular/48/000000/page-size--v2.png" alt="not present" style="box-sizing: content-box; position: absolute" (click)="setslider()"></i>
+<i><img src="https://img.icons8.com/fluent-systems-regular/48/000000/page-size--v2.png" alt="not present" style="box-sizing: content-box; position: absolute" ></i>
 <div class="body">
   <div style="position: absolute; z-index: 1; visibility: hidden; transition: visibility 3s">
     <label>
-      <input type="range" min="15" max="60" class="slider" #myRange (input)="sliderInput()">
+      <input type="range" min="15" max="60" class="slider" #myRange >
     </label>
   </div>
 
   <div class="slider">
     <div class="slides" #slide>
       <div class="flexbox" #flexbox>
-
+        <video id="user-video" #userVideo></video>
+        <video id="peer-video" #peerVideo></video>
       </div>
     </div>
   </div>

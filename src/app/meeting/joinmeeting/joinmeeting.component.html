@@ -17,10 +17,22 @@
                 <label for="" class="text-xs font-semibold px-1">Meeting Code</label>
                 <div class="flex">
                   <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="fas fa-link text-gray-400 text-lg"></i></div>
-                  <input type="text" formControlName="description" class="form-control w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" />
+                  <input type="text" formControlName="meetcode" class="form-control w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.meetcode.errors }" />
                 </div>
-                <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
-                    <div *ngIf="f.description.errors.required">Meeting Code is required</div>
+                <div *ngIf="submitted && f.meetcode.errors" class="invalid-feedback">
+                    <div *ngIf="f.meetcode.errors.required">Meeting Code is required</div>
+                </div>
+            </div>
+            </div>
+            <div class="form-group flex -mx-3">
+              <div class="w-full px-3 mb-3">
+                <label for="" class="text-xs font-semibold px-1">Meeting Username</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="fas fa-link text-gray-400 text-lg"></i></div>
+                  <input type="text" formControlName="username" class="form-control w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                </div>
+                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                    <div *ngIf="f.username.errors.required">Meeting Username is required</div>
                 </div>
             </div>
             </div>

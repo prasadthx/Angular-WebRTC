@@ -17,8 +17,7 @@ export class JoinmeetingComponent implements OnInit {
   loading = false;
   submitted = false;
   deleting = false;
-  meeting={}
-
+  
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -30,7 +29,8 @@ export class JoinmeetingComponent implements OnInit {
 
   ngOnInit() {
       this.form = this.formBuilder.group({
-          description: ['', [Validators.required]]
+          meetcode: ['', [Validators.required]],
+          username: ['', [Validators.required]]
       });
   }
 
@@ -48,22 +48,8 @@ export class JoinmeetingComponent implements OnInit {
           return;
       }
       
-      this.meeting['description'] = this.form.value['description']
-      this.loading = true;
-        this.accountService.createmeeting(this.account.id, this.meeting)
-            .pipe(first())
-            .subscribe({
-                next: () => {
-                    this.alertService.success('Update successful', { keepAfterRouteChange: true });
-                    this.toastr.success("Meeting Created Successfully","Success")
-                    this.router.navigate(['/auth'], { relativeTo: this.route });
-                },
-                error: error => {
-                    this.alertService.error(error);
-                    this.toastr.error(error)
-                    this.loading = false;
-                }
-            });
       
+      this.loading = true;
+      this.router.navigate(['/meeting/room'],{queryParams:{code:this.form.value['meetcode'], username:this.form.value['username']}})
   }
 }

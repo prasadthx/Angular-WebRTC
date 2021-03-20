@@ -8,7 +8,7 @@ import { JoinmeetingComponent } from './joinmeeting/joinmeeting.component'
 
 
 const routes:Routes = [
-  { path:'room', component: NewmeetingComponent, canActivate:[AuthGuard]},
+  { path:'meeting/room', component: RoomComponent, canActivate:[AuthGuard]},
   { path:'meeting/joinmeeting',component:JoinmeetingComponent, canActivate:[AuthGuard]},
   { path:'meeting/newmeeting',component:NewmeetingComponent, canActivate:[AuthGuard]}
 ];
