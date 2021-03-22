@@ -1,9 +1,11 @@
-import {AfterViewInit, Component, ElementRef, Injectable, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Injectable, OnInit, SecurityContext, ViewChild} from '@angular/core';
 import {SignalingService} from './signaling.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import { io } from 'socket.io-client';
-
-
+import { ToastrService} from 'ngx-toastr';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { IToastButton } from './acceptRejectCallToast';
+import {NgDompurifySanitizer} from '@tinkoff/ng-dompurify';
 
 @Component({
   selector: 'app-room',
@@ -13,27 +15,16 @@ import { io } from 'socket.io-client';
 
 export class RoomComponent implements OnInit, AfterViewInit {
   public socket;
+  private toastRef;
+
   constructor(
         private signalingService: SignalingService,
         private route: ActivatedRoute,
-        private router: Router) {
+        private router: Router,
+        private toastr: ToastrService,
+        private domSanitizer: DomSanitizer,
+        private readonly dompurifySanitizer: NgDompurifySanitizer) {
           console.log('In constructor');
-          this.socket = io('http://localhost:5000');
-
-          signalingService.getRoomCreatedStatus().subscribe((roomStatus) => {
-      console.log('Room created: ' + roomStatus);
-      this.displayStream();
-      if (roomStatus === 'created'){
-        this.creator = true;
-        this.displayStream();
-      }
-      if (roomStatus === 'joined'){
-        this.creator = false;
-        this.displayStream();
-        this.signalingService.socket.emit('ready', this.roomName);
-      }
-    });
-
   }
 
   @ViewChild('slide', {read: ElementRef}) slide: ElementRef;
@@ -42,15 +33,21 @@ export class RoomComponent implements OnInit, AfterViewInit {
   @ViewChild('headStyle', {read: ElementRef}) headstyle: ElementRef;
   @ViewChild('userVideo', {read: ElementRef}) userVideo: ElementRef;
   @ViewChild('peerVideo', { read: ElementRef}) peerVideo: ElementRef;
+  @ViewChild('calls', { read: ElementRef}) callsdisplay: ElementRef;
+
+  host;
+
+  userName;
 
   peervideo;
   uservideo;
+  callsDisplay;
   flexBox;
   outerFlex;
   slider;
   headStyle;
   userstream;
-  creator = false;
+  joiner = false;
   roomName;
   rtcPeerConnection;
   // Contains the stun server URL we will be using.
@@ -63,23 +60,86 @@ export class RoomComponent implements OnInit, AfterViewInit {
 
   participants = 0;
 
+  peersConnected = [];
+
+  peers = [];
+
+  socketId: string;
+
+  currentVideoTag;
+
+  currentVideoLabelTag;
+
+  trackCounter = 0;
+
+  peerCounter = 0;
+
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      if (params.code){
-        this.roomName = params.code;
-        console.log(params.code);
-        this.signalingService.roomJoin(params.code);
-      }
-      if (params.username){
-        console.log(params.username);
-        // this.test.emitjoin(params.username);
-      }
-    });
+
     this.displayStream();
 
-    this.signalingService.onPeerReady().subscribe( () => {
+    this.route.queryParams.subscribe(params => {
+      if (params.code && params.username){
+        console.log(params.code);
+        if (params.code.endsWith('1')){
+          this.host = true;
+          this.roomName = params.code;
+          this.userName = params.username;
+          this.signalingService.joinAsHost(params.code);
+        }
+        else {
+          this.userName = params.username;
+          this.signalingService.roomJoin(params.code, params.username);
+        }
+      }
+    });
+    // this.displayStream();
+    this.signalingService.getRoomCreatedStatus().subscribe((userObject) => {
+      console.log('Room created: ' + userObject.userName);
+      // this.displayStream();
+      this.peers.push(userObject);
+      // this.creator = false;
+      this.acceptRejectCall();
+        // this.displayStream();
+        // this.signalingService.socket.emit('ready', this.roomName);
+    });
+
+    this.signalingService.callCancelled().subscribe( () => {
+      // this.signalingService.socket.emit('disconnect');
+      this.router.navigate(['../../auth']);
+    });
+
+    this.signalingService.onPeerReady().subscribe( (paramsList) => {
+      this.roomName = paramsList[0];
       console.log(this.userstream);
-      this.peerConnection();
+      this.joiner = true;
+      console.log('Peer ready function, proceed to peerConnection');
+      this.peerConnection(paramsList[1]);
+    });
+
+    this.signalingService.onCandidate().subscribe( (candidate) => {
+      const icecandidate = new RTCIceCandidate(candidate);
+      console.log('New Rtc Ice candidate added');
+      this.rtcPeerConnection.addIceCandidate(icecandidate);
+    });
+
+    this.signalingService.onReceiveOffer().subscribe((paramsList) => {
+      //this.currentVideoTag = document.createElement('video');
+      console.log('Offer received, proceed to onOffer');
+      //this.flexBox.appendChild(this.currentVideoTag);
+      this.onOffer(paramsList[0], paramsList[1]);
+    });
+
+    this.signalingService.onAnswer().subscribe( (answer) => {
+      // this.currentVideoTag = document.createElement('video');
+      // this.flexBox.appendChild(this.currentVideoTag);
+      console.log('Answer received, remote description set');
+      console.log(answer);
+      this.rtcPeerConnection.setRemoteDescription(<RTCSessionDescriptionInit> answer).then((success) => {
+        console.log("successful");
+      }).catch((error) => {
+        console.log(error);
+      });
     });
 
   }
@@ -89,7 +149,7 @@ export class RoomComponent implements OnInit, AfterViewInit {
     this.outerFlex = this.slide.nativeElement;
     console.log(this.outerFlex);
     // this.flexBox = this.flexbox.nativeElement
-    this.flexBox = document.getElementsByClassName('flexbox');
+    this.flexBox = document.getElementsByClassName('flexbox')[0];
     console.log(this.flexBox);
 
     console.log(this.flexBox);
@@ -101,27 +161,12 @@ export class RoomComponent implements OnInit, AfterViewInit {
     // this.headStyle = this.headstyle.nativeElement
     // this.createGrid(this.participants);
     this.uservideo = this.userVideo.nativeElement;
-    this.peervideo = this.peerVideo.nativeElement;
-
-
-
-    this.signalingService.onCandidate().subscribe( (candidate) => {
-      const icecandidate = new RTCIceCandidate(candidate);
-      this.rtcPeerConnection.addIceCandidate(icecandidate);
-    });
-
-    this.signalingService.onReceiveOffer().subscribe((offer) => {
-      console.log(this.userstream);
-      this.onOffer(offer);
-    });
-
-    this.signalingService.onAnswer().subscribe( (answer) => {
-      this.rtcPeerConnection.setRemoteDescription(answer);
-    });
+    // this.peervideo = this.peerVideo.nativeElement;
+    // this.callsDisplay = this.callsdisplay.nativeElement;
   }
 
 
-  displayStream(){
+  displayStream(): void {
     navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true,
@@ -142,33 +187,102 @@ export class RoomComponent implements OnInit, AfterViewInit {
   }
 
 
-  peerConnection(){
-    if (this.creator) {
+  peerConnection(socketId): void {
       this.rtcPeerConnection = new RTCPeerConnection(this.iceServers);
       console.log(this.signalingService.socket);
-      this.rtcPeerConnection.onicecandidate = (event) => { if (event.candidate){this.signalingService.socket.emit('candidate', event.candidate, this.roomName); }};
-      this.rtcPeerConnection.ontrack = (event) => { this.peervideo.srcObject = event.streams[0]; this.peervideo.onloadedmetadata = (e) => {this.peervideo.play(); }; };
+      this.rtcPeerConnection.onicecandidate = (event) => { if (event.candidate){this.signalingService.socket.emit('candidate', event.candidate, `${this.roomName}`); }};
+      this.rtcPeerConnection.ontrack = (event) => {
+        if (this.trackCounter === 3){
+          this.trackCounter = 0;
+          this.peerCounter += 1;
+        }
+        else if (this.trackCounter === 0) {
+          const div = document.createElement('div');
+          this.currentVideoLabelTag = document.createElement('p');
+          this.currentVideoTag = document.createElement('video');
+          div.appendChild(this.currentVideoTag);
+          div.appendChild(this.currentVideoLabelTag);
+          this.flexBox.appendChild(div);
+          this.trackCounter += 1;
+        }
+        else {
+          console.log('In on Track Function');
+          // tslint:disable-next-line:prefer-for-of
+          for (let i = 0; i < event.streams.length; i++) {
+            // console.log('I value:' + i);
+            // const peerVideo = document.createElement('video');
+            // peerVideo.classList.add('peerVideo');
+            // peerVideo.srcObject = event.streams[i];
+            // peerVideo.onloadedmetadata = (e) => { peerVideo.play(); };
+            // this.flexBox.appendChild(peerVideo);
+            // console.log(this.flexBox);
+            this.currentVideoTag.classList.add('peerVideo');
+            this.currentVideoLabelTag.innerText = this.peersConnected[this.peerCounter];
+            this.currentVideoTag.srcObject = event.streams[i];
+            this.currentVideoTag.onloadedmetadata = (e) => this.currentVideoTag.play();
+          }
+          this.trackCounter += 1;
+        }
+      };
+      // this.rtcPeerConnection.ontrack = this.onTrackFunction;
       console.log(this.userstream);
+      // const remoteStream = new MediaStream();
+      // remoteStream.addTrack(this.userstream.getTracks()[0]);
+      // remoteStream.addTrack(this.userstream.getTracks()[1]);
       this.rtcPeerConnection.addTrack(this.userstream.getTracks()[0], this.userstream);
       this.rtcPeerConnection.addTrack(this.userstream.getTracks()[1], this.userstream);
+      // this.rtcPeerConnection.addTrack(remoteStream);
       this.rtcPeerConnection
         .createOffer()
         .then((offer) => {
           this.rtcPeerConnection.setLocalDescription(offer);
-          this.signalingService.socket.emit('offer', offer, this.roomName);
+          console.log('Offer Sent');
+          console.log(`${this.roomName}`);
+          this.signalingService.socket.emit('offer', offer, `${this.roomName}`, socketId);
         })
         .catch((error) => {
           console.log(error);
         });
-    }
   }
 
-  onOffer(offer){
-    if (!this.creator) {
+  onOffer(offer, socketId): void {
       this.rtcPeerConnection = new RTCPeerConnection(this.iceServers);
       console.log(this.signalingService.socket);
-      this.rtcPeerConnection.onicecandidate = (event) => { if (event.candidate){this.signalingService.socket.emit('candidate', event.candidate, this.roomName); }};
-      this.rtcPeerConnection.ontrack = (event) => { this.peervideo.srcObject = event.streams[0]; this.peervideo.onloadedmetadata = (e) => {this.peervideo.play(); }; };
+      this.rtcPeerConnection.onicecandidate = (event) => { if (event.candidate){this.signalingService.socket.emit('candidate', event.candidate, `${this.roomName}`); }};
+    this.rtcPeerConnection.ontrack = (event) => {
+      if (this.trackCounter === 3){
+        this.trackCounter = 0;
+        this.peerCounter += 1;
+      }
+      else if (this.trackCounter === 0) {
+        const div = document.createElement('div');
+        this.currentVideoLabelTag = document.createElement('p');
+        this.currentVideoTag = document.createElement('video');
+        div.appendChild(this.currentVideoTag);
+        div.appendChild(this.currentVideoLabelTag);
+        this.flexBox.appendChild(div);
+        this.trackCounter += 1;
+      }
+      else {
+        console.log('In on Track Function');
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < event.streams.length; i++) {
+          // console.log('I value:' + i);
+          // const peerVideo = document.createElement('video');
+          // peerVideo.classList.add('peerVideo');
+          // peerVideo.srcObject = event.streams[i];
+          // peerVideo.onloadedmetadata = (e) => { peerVideo.play(); };
+          // this.flexBox.appendChild(peerVideo);
+          // console.log(this.flexBox);
+          this.currentVideoTag.classList.add('peerVideo');
+          this.currentVideoLabelTag.innerText = this.peersConnected[this.peerCounter];
+          this.currentVideoTag.srcObject = event.streams[i];
+          this.currentVideoTag.onloadedmetadata = (e) => this.currentVideoTag.play();
+        }
+        this.trackCounter += 1;
+      }
+    };
+      // this.rtcPeerConnection.ontrack = this.onTrackFunction;
       console.log(this.userstream);
       this.rtcPeerConnection.addTrack(this.userstream.getTracks()[0], this.userstream);
       this.rtcPeerConnection.addTrack(this.userstream.getTracks()[1], this.userstream);
@@ -177,12 +291,13 @@ export class RoomComponent implements OnInit, AfterViewInit {
         .createAnswer()
         .then((answer) => {
           this.rtcPeerConnection.setLocalDescription(answer);
-          this.signalingService.socket.emit('answer', answer, this.roomName);
+          console.log('Answer Sent');
+          this.signalingService.socket.emit('answer', answer, socketId);
         })
         .catch((error) => {
           console.log(error);
         });
-    }
+
   }
 
   // Implementing the OnIceCandidateFunction which is part of the RTCPeerConnection Interface
@@ -196,22 +311,51 @@ export class RoomComponent implements OnInit, AfterViewInit {
   }
 
   // Implementing the OnTrackFunction which is part of the RTCPeerConnection Interface.
-  onTrackFunction(event) {
-    this.peervideo.srcObject = event.streams[0];
-    this.peervideo.onloadedmetadata = (e) => {
-      this.peervideo.play();
+  // onTrackFunction(event) {
+  //   this.peervideo.srcObject = event.streams[0];
+  //   this.peervideo.onloadedmetadata = (e) => {
+  //     this.peervideo.play();
+  //   };
+  // }
+
+  onTrackFunction(event){
+    const peerVideo = document.createElement('video');
+    peerVideo.srcObject = event.streams[0];
+    this.flexBox.appendChild(peerVideo);
+    peerVideo.onloadedmetadata = (e) => {
+      peerVideo.play();
     };
   }
 
+  acceptRejectCall(): void {
+        // const messageDiv = document.createElement('div');
+        // messageDiv.classList.add('object-contain');
+        // messageDiv.style.height = 'parent';
+        // messageDiv.innerHTML = `"> Reject </button></p>`;
+        // this.callsDisplay.appendChild(messageDiv);
+    }
 
+  rejectCall(socketId): void {
+    console.log('Rejected Call');
+    this.signalingService.socket.emit('callRejected', socketId);
+    this.peers.splice(0, 1);
+  }
 
+  answerCall(user): void {
+    console.log('answered call');
+    this.signalingService.socket.emit('ready', (`${this.roomName}`), user.socketId);
+    this.peers.splice(0, 1);
+    this.socketId = user.socketId;
+    this.peersConnected.push(user.userName);
+    console.log(`${this.roomName}`);
+  }
 
-
-
-
-
-
-
+  removeElementsByClass(className): void {
+    const elements = document.getElementsByClassName(className);
+    while (elements.length > 0){
+      elements[0].parentNode.removeChild(elements[0]);
+    }
+  }
 
 
 
@@ -285,4 +429,5 @@ export class RoomComponent implements OnInit, AfterViewInit {
   //     video.play();
   //   });
   // }
+
 }

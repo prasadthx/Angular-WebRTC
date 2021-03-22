@@ -1,7 +1,18 @@
-<style class="style">
+<style class="style" xmlns="http://www.w3.org/1999/html">
 
 </style>
 <i><img src="https://img.icons8.com/fluent-systems-regular/48/000000/page-size--v2.png" alt="not present" style="box-sizing: content-box; position: absolute" ></i>
+
+<div id="calls" #calls >
+  <div *ngFor="let user of peers">
+    Call From New Peer:{{user.userName}}
+    <p>
+      <button class="bg-green-700 rounded-l-sm" (click) ="answerCall(user)" > Answer </button>
+      <button class="bg-red-600 rounded-r-sm" (click) ="rejectCall(user)"> Reject </button>
+    </p>
+  </div>
+</div>
+
 <div class="body">
   <div style="position: absolute; z-index: 1; visibility: hidden; transition: visibility 3s">
     <label>
@@ -12,8 +23,11 @@
   <div class="slider">
     <div class="slides" #slide>
       <div class="flexbox" #flexbox>
-        <video id="user-video" #userVideo></video>
-        <video id="peer-video" #peerVideo></video>
+        <div>
+          <video id="user-video" #userVideo></video>
+          <p> {{userName}} </p>
+        </div>
+<!--        <video id="peer-video" #peerVideo></video>-->
       </div>
     </div>
   </div>

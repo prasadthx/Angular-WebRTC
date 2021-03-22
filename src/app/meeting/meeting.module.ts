@@ -8,7 +8,7 @@ import { JoinmeetingComponent } from './joinmeeting/joinmeeting.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import {NgDompurifyModule} from '@tinkoff/ng-dompurify';
 
 @NgModule({
   declarations: [RoomComponent, NewmeetingComponent, JoinmeetingComponent],
@@ -25,7 +25,8 @@ import { ReactiveFormsModule } from '@angular/forms';
       closeButton: true,
       newestOnTop: true,
       tapToDismiss: true,
-    })
+    }),
+    NgDompurifyModule
   ],
   providers: [SignalingService],
   exports: [

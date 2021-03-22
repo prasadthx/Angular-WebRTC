@@ -15,25 +15,38 @@ export class SignalingService {
     this.socket = io(this.url);
   }
 
-  public roomJoin(roomName){
-    this.socket.emit('join', roomName);
+  public roomJoin(roomName, userName){
+    this.socket.emit('join', roomName, userName);
+  }
+
+  public joinAsHost(roomName){
+    this.socket.emit('joinAsHost', roomName);
   }
 
   public getRoomCreatedStatus(){
     return new Observable ((observer: Observer<any>) => {
-        this.socket.on('joined', (roomStatus) => {
-          observer.next(roomStatus);
+        this.socket.on('acceptRejectCall', (userName) => {
+          observer.next(userName);
         });
     });
-  };
+  }
+
+  public callCancelled(){
+    return new Observable ( (observer: Observer<any>) => {
+      this.socket.on('callCancelled', () => {
+        observer.next('Call Cancelled');
+      });
+    });
+  }
 
   public onPeerReady(){
     return new Observable( (observer: Observer<any>) => {
-      this.socket.on('ready', () => {
-         observer.next('Peer ready');
+      this.socket.on('ready', (roomName, socketId) => {
+        const object = [roomName, socketId];
+        observer.next(object);
       });
     });
-  };
+  }
 
   public onCandidate(){
     return new Observable( (observer: Observer<any>) => {
@@ -41,15 +54,16 @@ export class SignalingService {
         observer.next(candidate);
       });
     });
-  };
+  }
 
   public onReceiveOffer(){
     return new Observable( (observer: Observer<any>) => {
-      this.socket.on('offer', (offer) => {
-        observer.next(offer);
+      this.socket.on('offer', (offer, socketId) => {
+        const paramsList = [offer, socketId]
+        observer.next(paramsList);
       });
     });
-  };
+  }
 
   public onAnswer(){
     return new Observable( (observer: Observer<any>) => {

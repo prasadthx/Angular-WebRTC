@@ -98,11 +98,20 @@ body{
   width: 90vw;
 }
 
-.flexbox > div {
-  background-color: darkblue;
-  color: white;
-  padding: 20px;
-  font-size: 30px;
-  margin: 1%;
-}
+/*.flexbox > div {*/
+/*  background-color: darkblue;*/
+/*  color: white;*/
+/*  padding: 20px;*/
+/*  font-size: 30px;*/
+/*  margin: 1%;*/
+/*}*/
 
+/*#calls{*/
+/*  background: dimgrey;*/
+/*}*/
+
+.flexbox > div > p{
+  background: dimgrey;
+  font-size: 1rem;
+  color: whitesmoke;
+}

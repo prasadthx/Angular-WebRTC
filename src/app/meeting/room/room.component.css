@@ -1,0 +1,22 @@
+#calls{
+  position: absolute;
+  top:1%;
+  left: 50%;
+  height: 5vh;
+  transform: translate(-50%);
+  z-index: 20;
+  align-content: center;
+  text-align: center;
+  overflow: hidden;
+  font-size: 1.7vh;
+}
+
+video{
+  background: black;
+}
+
+.flexbox > div > p{
+  background: dimgrey;
+  font-size: 1rem;
+  color: whitesmoke;
+}
