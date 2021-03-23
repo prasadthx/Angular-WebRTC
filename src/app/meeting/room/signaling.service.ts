@@ -23,6 +23,14 @@ export class SignalingService {
     this.socket.emit('joinAsHost', roomName);
   }
 
+  public getHostSocketId(): Observable<any>{
+    return new Observable((observer: Observer<any>) => {
+      this.socket.on('socketid', (socketId) => {
+        observer.next(socketId);
+      });
+    });
+  }
+
   public getRoomCreatedStatus(){
     return new Observable ((observer: Observer<any>) => {
         this.socket.on('acceptRejectCall', (userName) => {
@@ -41,8 +49,8 @@ export class SignalingService {
 
   public onPeerReady(){
     return new Observable( (observer: Observer<any>) => {
-      this.socket.on('ready', (roomName, socketId) => {
-        const object = [roomName, socketId];
+      this.socket.on('ready', (roomName, socketId, userName) => {
+        const object = [roomName, socketId, userName];
         observer.next(object);
       });
     });
@@ -58,8 +66,8 @@ export class SignalingService {
 
   public onReceiveOffer(){
     return new Observable( (observer: Observer<any>) => {
-      this.socket.on('offer', (offer, socketId) => {
-        const paramsList = [offer, socketId]
+      this.socket.on('offer', (offer, userName, socketId, callerSocketId) => {
+        const paramsList = [offer, userName, socketId, callerSocketId];
         observer.next(paramsList);
       });
     });

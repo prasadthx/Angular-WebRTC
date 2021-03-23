@@ -47,7 +47,7 @@ export class RoomComponent implements OnInit, AfterViewInit {
   slider;
   headStyle;
   userstream;
-  joiner = false;
+  joiner = true;
   roomName;
   rtcPeerConnection;
   // Contains the stun server URL we will be using.
@@ -66,6 +66,8 @@ export class RoomComponent implements OnInit, AfterViewInit {
 
   socketId: string;
 
+  peerSocketId: string;
+
   currentVideoTag;
 
   currentVideoLabelTag;
@@ -83,25 +85,32 @@ export class RoomComponent implements OnInit, AfterViewInit {
         console.log(params.code);
         if (params.code.endsWith('1')){
           this.host = true;
+          this.joiner = false;
           this.roomName = params.code;
           this.userName = params.username;
           this.signalingService.joinAsHost(params.code);
         }
         else {
           this.userName = params.username;
+          this.roomName = `${params.code}1`;
           this.signalingService.roomJoin(params.code, params.username);
         }
       }
     });
     // this.displayStream();
     this.signalingService.getRoomCreatedStatus().subscribe((userObject) => {
-      console.log('Room created: ' + userObject.userName);
+      console.log('Room joined: ' + userObject.userName);
+      if (this.peers.includes(userObject)){
+        console.log('Relogged');
+      }else {
+        console.log(userObject);
+        this.peers.push(userObject);
+      }
       // this.displayStream();
-      this.peers.push(userObject);
-      // this.creator = false;
-      this.acceptRejectCall();
-        // this.displayStream();
-        // this.signalingService.socket.emit('ready', this.roomName);
+    });
+
+    this.signalingService.getHostSocketId().subscribe( (socketId) => {
+      this.socketId = socketId;
     });
 
     this.signalingService.callCancelled().subscribe( () => {
@@ -110,33 +119,40 @@ export class RoomComponent implements OnInit, AfterViewInit {
     });
 
     this.signalingService.onPeerReady().subscribe( (paramsList) => {
-      this.roomName = paramsList[0];
-      console.log(this.userstream);
-      this.joiner = true;
+      if (paramsList[2] === this.userName){
+        this.joiner = true;
+      }
+      else {
+        this.joiner = false;
+      }
+      console.log(this.joiner);
       console.log('Peer ready function, proceed to peerConnection');
-      this.peerConnection(paramsList[1]);
+      this.peerConnection(paramsList[1], paramsList[2]);
     });
 
     this.signalingService.onCandidate().subscribe( (candidate) => {
+      // console.log('In Ice Candidate function');
       const icecandidate = new RTCIceCandidate(candidate);
       console.log('New Rtc Ice candidate added');
       this.rtcPeerConnection.addIceCandidate(icecandidate);
     });
 
     this.signalingService.onReceiveOffer().subscribe((paramsList) => {
-      //this.currentVideoTag = document.createElement('video');
+      // this.currentVideoTag = document.createElement('video');
+      this.socketId = paramsList[2];
       console.log('Offer received, proceed to onOffer');
-      //this.flexBox.appendChild(this.currentVideoTag);
-      this.onOffer(paramsList[0], paramsList[1]);
+      // this.flexBox.appendChild(this.currentVideoTag);
+      this.onOffer(paramsList[0], paramsList[2], paramsList[1], paramsList[3]);
     });
 
     this.signalingService.onAnswer().subscribe( (answer) => {
       // this.currentVideoTag = document.createElement('video');
       // this.flexBox.appendChild(this.currentVideoTag);
-      console.log('Answer received, remote description set');
+      // console.log('Answer received, remote description set');
+      const answerSdp = new RTCSessionDescription(answer);
       console.log(answer);
-      this.rtcPeerConnection.setRemoteDescription(<RTCSessionDescriptionInit> answer).then((success) => {
-        console.log("successful");
+      this.rtcPeerConnection.setRemoteDescription(answerSdp as RTCSessionDescriptionInit).then((success) => {
+        console.log('successful');
       }).catch((error) => {
         console.log(error);
       });
@@ -187,16 +203,26 @@ export class RoomComponent implements OnInit, AfterViewInit {
   }
 
 
-  peerConnection(socketId): void {
+  peerConnection(peersocketId, username): void {
+    if (this.joiner === false) {
+      console.log('Initiating new rtc connection');
       this.rtcPeerConnection = new RTCPeerConnection(this.iceServers);
       console.log(this.signalingService.socket);
-      this.rtcPeerConnection.onicecandidate = (event) => { if (event.candidate){this.signalingService.socket.emit('candidate', event.candidate, `${this.roomName}`); }};
+      this.rtcPeerConnection.onicecandidate = (event) => {
+        console.log('In on ice candidate function');
+        if (event.candidate) {
+          this.signalingService.socket.emit('candidate', event.candidate, peersocketId);
+        }
+      };
       this.rtcPeerConnection.ontrack = (event) => {
-        if (this.trackCounter === 3){
+        console.log('In ontrack function');
+        console.log('========================////////////////////#####################');
+        console.log('THis is track counter: ' + this.trackCounter);
+        if (this.trackCounter === 3) {
           this.trackCounter = 0;
           this.peerCounter += 1;
         }
-        else if (this.trackCounter === 0) {
+        if (this.trackCounter === 0) {
           const div = document.createElement('div');
           this.currentVideoLabelTag = document.createElement('p');
           this.currentVideoTag = document.createElement('video');
@@ -205,10 +231,9 @@ export class RoomComponent implements OnInit, AfterViewInit {
           this.flexBox.appendChild(div);
           this.trackCounter += 1;
         }
-        else {
-          console.log('In on Track Function');
+        console.log('In on Track Function');
           // tslint:disable-next-line:prefer-for-of
-          for (let i = 0; i < event.streams.length; i++) {
+        for (let i = 0; i < event.streams.length; i++) {
             // console.log('I value:' + i);
             // const peerVideo = document.createElement('video');
             // peerVideo.classList.add('peerVideo');
@@ -217,12 +242,11 @@ export class RoomComponent implements OnInit, AfterViewInit {
             // this.flexBox.appendChild(peerVideo);
             // console.log(this.flexBox);
             this.currentVideoTag.classList.add('peerVideo');
-            this.currentVideoLabelTag.innerText = this.peersConnected[this.peerCounter];
+            this.currentVideoLabelTag.innerText = username;
             this.currentVideoTag.srcObject = event.streams[i];
             this.currentVideoTag.onloadedmetadata = (e) => this.currentVideoTag.play();
           }
-          this.trackCounter += 1;
-        }
+        this.trackCounter += 1;
       };
       // this.rtcPeerConnection.ontrack = this.onTrackFunction;
       console.log(this.userstream);
@@ -238,50 +262,58 @@ export class RoomComponent implements OnInit, AfterViewInit {
           this.rtcPeerConnection.setLocalDescription(offer);
           console.log('Offer Sent');
           console.log(`${this.roomName}`);
-          this.signalingService.socket.emit('offer', offer, `${this.roomName}`, socketId);
+          this.signalingService.socket.emit('offer', offer, this.userName, peersocketId, this.socketId);
         })
         .catch((error) => {
           console.log(error);
         });
+    }
   }
 
-  onOffer(offer, socketId): void {
+  onOffer(offer, socketId, username, callerSocketId): void {
       this.rtcPeerConnection = new RTCPeerConnection(this.iceServers);
       console.log(this.signalingService.socket);
-      this.rtcPeerConnection.onicecandidate = (event) => { if (event.candidate){this.signalingService.socket.emit('candidate', event.candidate, `${this.roomName}`); }};
-    this.rtcPeerConnection.ontrack = (event) => {
-      if (this.trackCounter === 3){
-        this.trackCounter = 0;
-        this.peerCounter += 1;
-      }
-      else if (this.trackCounter === 0) {
-        const div = document.createElement('div');
-        this.currentVideoLabelTag = document.createElement('p');
-        this.currentVideoTag = document.createElement('video');
-        div.appendChild(this.currentVideoTag);
-        div.appendChild(this.currentVideoLabelTag);
-        this.flexBox.appendChild(div);
-        this.trackCounter += 1;
-      }
-      else {
-        console.log('In on Track Function');
-        // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < event.streams.length; i++) {
-          // console.log('I value:' + i);
-          // const peerVideo = document.createElement('video');
-          // peerVideo.classList.add('peerVideo');
-          // peerVideo.srcObject = event.streams[i];
-          // peerVideo.onloadedmetadata = (e) => { peerVideo.play(); };
-          // this.flexBox.appendChild(peerVideo);
-          // console.log(this.flexBox);
-          this.currentVideoTag.classList.add('peerVideo');
-          this.currentVideoLabelTag.innerText = this.peersConnected[this.peerCounter];
-          this.currentVideoTag.srcObject = event.streams[i];
-          this.currentVideoTag.onloadedmetadata = (e) => this.currentVideoTag.play();
+      this.rtcPeerConnection.onicecandidate = (event) => {
+        console.log('In on ice candidate function');
+        if (event.candidate) {
+          this.signalingService.socket.emit('candidate', event.candidate, callerSocketId);
         }
+      };
+      this.rtcPeerConnection.ontrack = (event) => {
+        console.log('========================////////////////////#####################');
+        console.log('THis is track counter: ' + this.trackCounter);
+        if (this.trackCounter === 3) {
+          this.trackCounter = 0;
+          this.peerCounter += 1;
+        }
+        if (this.trackCounter === 0) {
+          const div = document.createElement('div');
+          this.currentVideoLabelTag = document.createElement('p');
+          this.currentVideoTag = document.createElement('video');
+          div.appendChild(this.currentVideoTag);
+          div.appendChild(this.currentVideoLabelTag);
+          this.flexBox.appendChild(div);
+          this.trackCounter += 1;
+        }
+        console.log('In on Track Function');
+          // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < event.streams.length; i++) {
+            // console.log('I value:' + i);
+            // const peerVideo = document.createElement('video');
+            // peerVideo.classList.add('peerVideo');
+            // peerVideo.srcObject = event.streams[i];
+            // peerVideo.onloadedmetadata = (e) => { peerVideo.play(); };
+            // this.flexBox.appendChild(peerVideo);
+            // console.log(this.flexBox);
+            this.currentVideoTag.classList.add('peerVideo');
+            this.currentVideoLabelTag.innerText = username;
+            this.currentVideoTag.srcObject = event.streams[i];
+            this.currentVideoTag.onloadedmetadata = (e) => this.currentVideoTag.play();
+          }
         this.trackCounter += 1;
-      }
-    };
+
+        console.log('THis is track counter: ' + this.trackCounter);
+      };
       // this.rtcPeerConnection.ontrack = this.onTrackFunction;
       console.log(this.userstream);
       this.rtcPeerConnection.addTrack(this.userstream.getTracks()[0], this.userstream);
@@ -292,12 +324,11 @@ export class RoomComponent implements OnInit, AfterViewInit {
         .then((answer) => {
           this.rtcPeerConnection.setLocalDescription(answer);
           console.log('Answer Sent');
-          this.signalingService.socket.emit('answer', answer, socketId);
+          this.signalingService.socket.emit('answer', answer, callerSocketId);
         })
         .catch((error) => {
           console.log(error);
         });
-
   }
 
   // Implementing the OnIceCandidateFunction which is part of the RTCPeerConnection Interface
@@ -327,14 +358,6 @@ export class RoomComponent implements OnInit, AfterViewInit {
     };
   }
 
-  acceptRejectCall(): void {
-        // const messageDiv = document.createElement('div');
-        // messageDiv.classList.add('object-contain');
-        // messageDiv.style.height = 'parent';
-        // messageDiv.innerHTML = `"> Reject </button></p>`;
-        // this.callsDisplay.appendChild(messageDiv);
-    }
-
   rejectCall(socketId): void {
     console.log('Rejected Call');
     this.signalingService.socket.emit('callRejected', socketId);
@@ -343,9 +366,8 @@ export class RoomComponent implements OnInit, AfterViewInit {
 
   answerCall(user): void {
     console.log('answered call');
-    this.signalingService.socket.emit('ready', (`${this.roomName}`), user.socketId);
+    this.signalingService.socket.emit('ready', (`${this.roomName}`), user.socketId, user.userName);
     this.peers.splice(0, 1);
-    this.socketId = user.socketId;
     this.peersConnected.push(user.userName);
     console.log(`${this.roomName}`);
   }

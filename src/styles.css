@@ -111,7 +111,7 @@ body{
 /*}*/
 
 .flexbox > div > p{
-  background: dimgrey;
+  background: black;
   font-size: 1rem;
   color: whitesmoke;
 }
